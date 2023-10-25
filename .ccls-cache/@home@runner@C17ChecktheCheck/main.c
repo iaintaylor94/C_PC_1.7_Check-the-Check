@@ -229,7 +229,107 @@ bool knight (int Horizontal, int Vertical) {
 }
 
 bool rookBishopQueen (int X, int Y) {
-  
+  // Orthogonals
+  // Up
+  for (int i = Y - 1; i >= 0; i--) {
+    if (gChessboard[X][i] == 'R' || gChessboard[X][i] == 'Q') {
+      return true;
+    }
+    if (gChessboard[X][i] == '.') {
+      continue;
+    }
+    else {
+      break;
+    }
+  }
+  // Down
+  for (int i = Y + 1; i < gChessboardSize; i++) {
+    if (gChessboard[X][i] == 'R' || gChessboard[X][i] == 'Q') {
+      return true;
+    }
+    if (gChessboard[X][i] == '.') {
+      continue;
+    }
+    else {
+      break;
+    }
+  }
+  // Left
+  for (int i = X - 1; i >= 0; i--) {
+    if (gChessboard[i][Y] == 'R' || gChessboard[i][Y] == 'Q') {
+      return true;
+    }
+    if (gChessboard[X][i] == '.') {
+      continue;
+    }
+    else {
+      break;
+    }
+  }
+  // Right
+  for (int i = X + 1; i < gChessboardSize; i++) {
+    if (gChessboard[i][Y] == 'R' || gChessboard[i][Y] == 'Q') {
+      return true;
+    }
+    if (gChessboard[X][i] == '.') {
+      continue;
+    }
+    else {
+      break;
+    }
+  }
+
+  // Diagonals
+  // Top right
+  for (int i = X + 1, j = Y - 1; i < gChessboardSize; i++, j--) {
+    if (gChessboard[i][j] == 'B' || gChessboard[i][j] == 'Q') {
+      return true;
+    }
+    if (gChessboard[i][j] == '.') {
+      continue;
+    }
+    else {
+      break;
+    }
+  }
+  // Top left
+  for (int i = X - 1, j = Y - 1; i < gChessboardSize; i--, j--) {
+    if (gChessboard[i][j] == 'B' || gChessboard[i][j] == 'Q') {
+      return true;
+    }
+    if (gChessboard[i][j] == '.') {
+      continue;
+    }
+    else {
+      break;
+    }
+  }
+  // Bottom left
+  for (int i = X - 1, j = Y + 1; i < gChessboardSize; i--, j++) {
+    if (gChessboard[i][j] == 'B' || gChessboard[i][j] == 'Q') {
+      return true;
+    }
+    if (gChessboard[i][j] == '.') {
+      continue;
+    }
+    else {
+      break;
+    }
+  }
+  // Bottom right
+  for (int i = X + 1, j = Y + 1; i < gChessboardSize; i++, j++) {
+    if (gChessboard[i][j] == 'B' || gChessboard[i][j] == 'Q') {
+      return true;
+    }
+    if (gChessboard[i][j] == '.') {
+      continue;
+    }
+    else {
+      break;
+    }
+  }
+
+  return true;
 }
 
 bool inCheck (void) {
