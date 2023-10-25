@@ -9,10 +9,13 @@
 FILE *gInputFile;
 const int gChessboardSize = 8;
 char gChessboard [gChessboardSize][gChessboardSize];
+int gKingHorizontalPosition = 0;
+int gKingVerticalPosition = 0;
 
 // Declare Functions
 void usage (char *);
 void initializeChessboard (void);
+void findKing (int*, int*);
 bool offBoardLower (int);
 bool offBoardUpper (int);
 bool kingPawn (int, int);
@@ -45,6 +48,7 @@ int main(int argc, char *argv[]) {
   while (true) {
       
     initializeChessboard (); 
+    findKing ( &gKingHorizontalPosition, &gKingVerticalPosition);
 
     if (checkTerminationCondition())
       break;
@@ -93,6 +97,17 @@ void initializeChessboard (void) {
     }
   }
   fgetc (gInputFile); // Strip '\n'
+}
+
+void findKing (int* h, int* v) {
+  for (int i = 0; i < gChessboardSize; i++) { // Height/Y
+    for (int j = 0; j < gChessboardSize; j++) { // Width/X
+      if (gChessboard[i][j] == 'K') {
+        *h = i;
+        *v = j;
+      }
+    }
+  }
 }
 
 bool offBoardLower (int p) {
@@ -218,7 +233,23 @@ bool rookBishopQueen (int X, int Y) {
 }
 
 bool inCheck (void) {
-  
+  if (!kingPawn(gKingHorizontalPosition, gKingVerticalPosition)) {
+    if (!knight(gKingHorizontalPosition, gKingVerticalPosition)) {
+      if (!rookBishopQueen(gKingHorizontalPosition, gKingVerticalPosition)) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+    else {
+      return true;
+    }
+  }
+  else {
+    return true;
+  }
+  return true;
 }
 
 void mirrorH (void) {
