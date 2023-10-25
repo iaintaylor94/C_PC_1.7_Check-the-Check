@@ -16,12 +16,14 @@ int gKingVerticalPosition = 0;
 void usage (char *);
 void initializeChessboard (void);
 void findKing (int*, int*);
+void rotateKing (void);
 bool offBoardLower (int);
 bool offBoardUpper (int);
 bool kingPawn (int, int);
 bool knight (int, int);
 bool rookBishopQueen (int, int);
 bool inCheck (void);
+bool checkWrapper (char*, int);
 void mirrorH (void);
 void mirrorV (void);
 void rotateBoard (void);
@@ -40,34 +42,26 @@ int main(int argc, char *argv[]) {
     exit (EXIT_FAILURE);
   }
   else {
-    fprintf (stderr, "%s opened for reading.\n" , argv[1]);
+//    fprintf (stderr, "%s opened for reading.\n" , argv[1]);
   }
+    
 
-
-  int gameNum = 0;
+  int gameNum = 1;
   while (true) {
       
     initializeChessboard (); 
-    findKing ( &gKingHorizontalPosition, &gKingVerticalPosition);
 
     if (checkTerminationCondition())
       break;
 
-    if (!inCheck()) { // Black
-      swapColours();
-      if (!inCheck()) { // White
-        printf ("Game #%d: no king is in check.\n", gameNum);
-      }
-      else {
-        printf ("Game #%d: white is in check.\n", gameNum);
-      }
-    }
-    else {
-      printf ("Game #%d: black is in check.\n", gameNum);
+    bool black = checkWrapper ("BLACK", gameNum);
+    bool white = checkWrapper ("WHITE", gameNum);
+    if (!black && !white) {
+      checkWrapper ("NO",gameNum);
     }
     
+    
   gameNum++;
-
   }
 
 
@@ -97,6 +91,7 @@ void initializeChessboard (void) {
     }
   }
   fgetc (gInputFile); // Strip '\n'
+  findKing ( &gKingHorizontalPosition, &gKingVerticalPosition);
 }
 
 void findKing (int* h, int* v) {
@@ -352,6 +347,26 @@ bool inCheck (void) {
   return true;
 }
 
+bool checkWrapper (char* colour, int game) {
+  if (strcmp(colour, "BLACK")) {
+    if (inCheck()) {
+      printf ("Game #%d: black king is in check.\n", game);
+      return true;
+    }
+  }
+  else if (strcmp(colour, "WHITE")) {
+    swapColours();
+    if (inCheck()) {
+      printf ("Game #%d: white king is in check.\n", game);
+      return true;
+    }
+  }
+  else if (strcmp(colour, "NO")) {
+    printf ("Game #%d: no king is in check.\n", game);
+  } 
+  return true;
+}
+
 void mirrorH (void) {
   char temp;
   for (int i = 0; i < gChessboardSize / 2; i++) {
@@ -395,6 +410,7 @@ void swapCaps (void) {
 void swapColours (void) {
   rotateBoard ();
   swapCaps ();
+  findKing(&gKingHorizontalPosition, &gKingVerticalPosition);
 }
 
 bool checkTerminationCondition (void) {
