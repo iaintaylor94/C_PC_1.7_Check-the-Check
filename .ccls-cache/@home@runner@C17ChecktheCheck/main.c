@@ -54,16 +54,16 @@ int main(int argc, char *argv[]) {
     if (checkTerminationCondition())
       break;
 
-    bool black = checkWrapper ("BLACK", gameNum);
-    bool white = checkWrapper ("WHITE", gameNum);
-    if (!black && !white) {
-      checkWrapper ("NO",gameNum);
-    }
-    
-    
-  gameNum++;
-  }
+    printf ("Game #%d\n\n", gameNum);
 
+
+    if (!checkWrapper ("BLACK", gameNum))
+      if (!checkWrapper("WHITE", gameNum))
+        checkWrapper("NO", gameNum);
+
+    
+    gameNum++;
+  }
 
 
   // Close File
@@ -97,12 +97,13 @@ void initializeChessboard (void) {
 void findKing (int* h, int* v) {
   for (int i = 0; i < gChessboardSize; i++) { // Height/Y
     for (int j = 0; j < gChessboardSize; j++) { // Width/X
-      if (gChessboard[i][j] == 'K') {
-        *h = i;
-        *v = j;
+      if (gChessboard[i][j] == 'k') {
+        *h = j;
+        *v = i;
       }
     }
   }
+  printf ("King (%d,%d)\n", gKingVerticalPosition, gKingHorizontalPosition);
 }
 
 bool offBoardLower (int p) {
@@ -131,12 +132,12 @@ bool kingPawn (int Horizontal, int Vertical) {
     }
   }
   if (!offBoardLower(Vertical - 1) && !offBoardUpper(Horizontal + 1)) {
-    if (gChessboard[Vertical - 1][Horizontal + 1] == 'K' || gChessboard[Vertical - 1][Horizontal + 1] == 'P') {
+    if (gChessboard[Vertical - 1][Horizontal + 1] == 'K') {
       return true;
     }
   }
   if (!offBoardUpper(Vertical + 1) && !offBoardLower(Horizontal - 1)) {
-    if (gChessboard[Vertical + 1][Horizontal - 1] == 'K') {
+    if (gChessboard[Vertical + 1][Horizontal - 1] == 'K' || gChessboard[Vertical + 1][Horizontal - 1] == 'P') {
       return true;
     }
   }
@@ -223,14 +224,14 @@ bool knight (int Horizontal, int Vertical) {
   return false;
 }
 
-bool rookBishopQueen (int X, int Y) {
+bool rookBishopQueen (int Horizontal, int Vertical) {
   // Orthogonals
   // Up
-  for (int i = Y - 1; i >= 0; i--) {
-    if (gChessboard[X][i] == 'R' || gChessboard[X][i] == 'Q') {
+  for (int i = Vertical - 1; i >= 0; i--) {
+    if (gChessboard[i][Horizontal] == 'R' || gChessboard[i][Horizontal] == 'Q') {
       return true;
     }
-    if (gChessboard[X][i] == '.') {
+    if (gChessboard[i][Horizontal] == '.') {
       continue;
     }
     else {
@@ -238,11 +239,11 @@ bool rookBishopQueen (int X, int Y) {
     }
   }
   // Down
-  for (int i = Y + 1; i < gChessboardSize; i++) {
-    if (gChessboard[X][i] == 'R' || gChessboard[X][i] == 'Q') {
+  for (int i = Vertical + 1; i < gChessboardSize; i++) {
+    if (gChessboard[i][Horizontal] == 'R' || gChessboard[i][Horizontal] == 'Q') {
       return true;
     }
-    if (gChessboard[X][i] == '.') {
+    if (gChessboard[i][Horizontal] == '.') {
       continue;
     }
     else {
@@ -250,11 +251,11 @@ bool rookBishopQueen (int X, int Y) {
     }
   }
   // Left
-  for (int i = X - 1; i >= 0; i--) {
-    if (gChessboard[i][Y] == 'R' || gChessboard[i][Y] == 'Q') {
+  for (int i = Horizontal - 1; i >= 0; i--) {
+    if (gChessboard[Vertical][i] == 'R' || gChessboard[Vertical][i] == 'Q') {
       return true;
     }
-    if (gChessboard[X][i] == '.') {
+    if (gChessboard[Vertical][i] == '.') {
       continue;
     }
     else {
@@ -262,11 +263,11 @@ bool rookBishopQueen (int X, int Y) {
     }
   }
   // Right
-  for (int i = X + 1; i < gChessboardSize; i++) {
-    if (gChessboard[i][Y] == 'R' || gChessboard[i][Y] == 'Q') {
+  for (int i = Horizontal + 1; i < gChessboardSize; i++) {
+    if (gChessboard[Vertical][i] == 'R' || gChessboard[Vertical][i] == 'Q') {
       return true;
     }
-    if (gChessboard[X][i] == '.') {
+    if (gChessboard[Vertical][i] == '.') {
       continue;
     }
     else {
@@ -276,11 +277,11 @@ bool rookBishopQueen (int X, int Y) {
 
   // Diagonals
   // Top right
-  for (int i = X + 1, j = Y - 1; i < gChessboardSize; i++, j--) {
-    if (gChessboard[i][j] == 'B' || gChessboard[i][j] == 'Q') {
+  for (int i = Horizontal + 1, j = Vertical - 1; i < gChessboardSize; i++, j--) {
+    if (gChessboard[j][i] == 'B' || gChessboard[j][i] == 'Q') {
       return true;
     }
-    if (gChessboard[i][j] == '.') {
+    if (gChessboard[j][i] == '.') {
       continue;
     }
     else {
@@ -288,11 +289,11 @@ bool rookBishopQueen (int X, int Y) {
     }
   }
   // Top left
-  for (int i = X - 1, j = Y - 1; i < gChessboardSize; i--, j--) {
-    if (gChessboard[i][j] == 'B' || gChessboard[i][j] == 'Q') {
+  for (int i = Horizontal - 1, j = Vertical - 1; i < gChessboardSize; i--, j--) {
+    if (gChessboard[j][i] == 'B' || gChessboard[j][i] == 'Q') {
       return true;
     }
-    if (gChessboard[i][j] == '.') {
+    if (gChessboard[j][i] == '.') {
       continue;
     }
     else {
@@ -300,11 +301,11 @@ bool rookBishopQueen (int X, int Y) {
     }
   }
   // Bottom left
-  for (int i = X - 1, j = Y + 1; i < gChessboardSize; i--, j++) {
-    if (gChessboard[i][j] == 'B' || gChessboard[i][j] == 'Q') {
+  for (int i = Horizontal - 1, j = Vertical + 1; i < gChessboardSize; i--, j++) {
+    if (gChessboard[j][i] == 'B' || gChessboard[j][i] == 'Q') {
       return true;
     }
-    if (gChessboard[i][j] == '.') {
+    if (gChessboard[j][i] == '.') {
       continue;
     }
     else {
@@ -312,11 +313,11 @@ bool rookBishopQueen (int X, int Y) {
     }
   }
   // Bottom right
-  for (int i = X + 1, j = Y + 1; i < gChessboardSize; i++, j++) {
-    if (gChessboard[i][j] == 'B' || gChessboard[i][j] == 'Q') {
+  for (int i = Horizontal + 1, j = Vertical + 1; i < gChessboardSize; i++, j++) {
+    if (gChessboard[j][i] == 'B' || gChessboard[j][i] == 'Q') {
       return true;
     }
-    if (gChessboard[i][j] == '.') {
+    if (gChessboard[j][i] == '.') {
       continue;
     }
     else {
@@ -324,47 +325,63 @@ bool rookBishopQueen (int X, int Y) {
     }
   }
 
-  return true;
+  return false;
 }
 
 bool inCheck (void) {
-  if (!kingPawn(gKingHorizontalPosition, gKingVerticalPosition)) {
-    if (!knight(gKingHorizontalPosition, gKingVerticalPosition)) {
-      if (!rookBishopQueen(gKingHorizontalPosition, gKingVerticalPosition)) {
-        return false;
-      }
-      else {
-        return true;
-      }
-    }
-    else {
-      return true;
-    }
+  bool isTrue = false;
+
+  if (kingPawn(gKingHorizontalPosition, gKingVerticalPosition)) {
+    printf ("kingPawn: true\n");
+    isTrue = true;
   }
   else {
-    return true;
+    printf ("kingPawn: false\n");
   }
-  return true;
+  
+  if (knight(gKingHorizontalPosition, gKingVerticalPosition)) {
+    printf ("knight: true\n");
+    isTrue = true;
+  }
+  else {
+    printf ("knight: false\n");
+  }
+
+  if (rookBishopQueen(gKingHorizontalPosition, gKingVerticalPosition)) {
+    printf ("rookBishopQueen: true\n");
+    isTrue = true;
+  }
+  else {
+    printf ("rookBishopQueen: false\n");
+  }
+  return isTrue;
 }
 
 bool checkWrapper (char* colour, int game) {
-  if (strcmp(colour, "BLACK")) {
+  if (strcmp(colour, "BLACK") == 0) {
+    printf ("BLACK\n");
+    printChessboard();
     if (inCheck()) {
       printf ("Game #%d: black king is in check.\n", game);
       return true;
     }
   }
-  else if (strcmp(colour, "WHITE")) {
+  else if (strcmp(colour, "WHITE") == 0) {
+    printf ("WHITE\n");
     swapColours();
+    printChessboard();
     if (inCheck()) {
       printf ("Game #%d: white king is in check.\n", game);
       return true;
     }
   }
-  else if (strcmp(colour, "NO")) {
+  else if (strcmp(colour, "NO") == 0) {
+    printf ("NO\n");
+    printChessboard();
     printf ("Game #%d: no king is in check.\n", game);
+    return true;
   } 
-  return true;
+  return false;
 }
 
 void mirrorH (void) {
