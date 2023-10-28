@@ -54,8 +54,6 @@ int main(int argc, char *argv[]) {
     if (checkTerminationCondition())
       break;
 
-    printf ("Game #%d\n\n", gameNum);
-
 
     if (!checkWrapper ("BLACK", gameNum))
       if (!checkWrapper("WHITE", gameNum))
@@ -103,7 +101,6 @@ void findKing (int* h, int* v) {
       }
     }
   }
-  printf ("King (%d,%d)\n", gKingVerticalPosition, gKingHorizontalPosition);
 }
 
 bool offBoardLower (int p) {
@@ -332,52 +329,36 @@ bool inCheck (void) {
   bool isTrue = false;
 
   if (kingPawn(gKingHorizontalPosition, gKingVerticalPosition)) {
-    printf ("kingPawn: true\n");
     isTrue = true;
   }
-  else {
-    printf ("kingPawn: false\n");
-  }
+
   
   if (knight(gKingHorizontalPosition, gKingVerticalPosition)) {
-    printf ("knight: true\n");
     isTrue = true;
-  }
-  else {
-    printf ("knight: false\n");
   }
 
   if (rookBishopQueen(gKingHorizontalPosition, gKingVerticalPosition)) {
-    printf ("rookBishopQueen: true\n");
     isTrue = true;
   }
-  else {
-    printf ("rookBishopQueen: false\n");
-  }
+
   return isTrue;
 }
 
 bool checkWrapper (char* colour, int game) {
   if (strcmp(colour, "BLACK") == 0) {
-    printf ("BLACK\n");
-    printChessboard();
     if (inCheck()) {
       printf ("Game #%d: black king is in check.\n", game);
       return true;
     }
   }
   else if (strcmp(colour, "WHITE") == 0) {
-    printf ("WHITE\n");
     swapColours();
-    printChessboard();
     if (inCheck()) {
       printf ("Game #%d: white king is in check.\n", game);
       return true;
     }
   }
   else if (strcmp(colour, "NO") == 0) {
-    printf ("NO\n");
-    printChessboard();
     printf ("Game #%d: no king is in check.\n", game);
     return true;
   } 
